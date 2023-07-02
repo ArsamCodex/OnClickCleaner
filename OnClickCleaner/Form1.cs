@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,7 +16,7 @@ namespace OnClickCleaner
     public partial class Form1 : Form
 
     {
-         string path = @"C:\Users\Armin\AppData\Local\Temp";
+        string path = @"C:\Users\Armin\AppData\Local\Temp";
         // C:\Users\Armin\AppData\Local\Temp
         //C:\Windows\Prefetch
         //C:\Windows\Temp
@@ -36,19 +37,19 @@ namespace OnClickCleaner
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            
+
 
         }
 
 
         public void RemoveAllFilesInDirectory(string path)
         {
-           // List<string> FailedfILEToDelete = new List<string>();
+            // List<string> FailedfILEToDelete = new List<string>();
 
             try
             {
                 // Get the list of files in the specified directory
-               // string[] files = Directory.GetFiles(path);
+                // string[] files = Directory.GetFiles(path);
 
                 foreach (string file in Directory.GetFiles(path))
                 {
@@ -76,16 +77,16 @@ namespace OnClickCleaner
                     }
                 }
             }
-            catch (Exception )
+            catch (Exception)
             {
                 // Console.WriteLine($"An error occurred while removing files: {ex.Message}");
-               
+
             }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if(checkBox1.Checked)
+            if (checkBox1.Checked)
             {
                 RemoveAllFilesInDirectory(path);
             }
@@ -105,7 +106,7 @@ namespace OnClickCleaner
         {
 
         }
-        public void DiskPartManager(string DiskPart , string PartiotionNumber)
+        public void DiskPartManager(string DiskPart, string PartiotionNumber)
         {
             string script = $"select disk {DiskPart}\n" +
                        $"select partition {PartiotionNumber}\n" +
@@ -135,7 +136,7 @@ namespace OnClickCleaner
 
         private void button2_Click(object sender, EventArgs e)
         {
-            DiskPartManager(textBox1.Text,textBox2.Text);
+            DiskPartManager(textBox1.Text, textBox2.Text);
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -154,6 +155,90 @@ namespace OnClickCleaner
         }
 
         private void richTextBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tabPage3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void richTextBox3_TextChanged(object sender, EventArgs e)
+        {
+
+            
+        }
+        public static string[] GetInstalledPrograms()
+        {
+            string uninstallKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
+            using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(uninstallKey))
+            {
+                string[] programNames = rk.GetSubKeyNames();
+                string[] installedPrograms = new string[programNames.Length];
+
+                for (int i = 0; i < programNames.Length; i++)
+                {
+                    using (RegistryKey subKey = rk.OpenSubKey(programNames[i]))
+                    {
+                        installedPrograms[i] = subKey.GetValue("DisplayName") as string;
+                    }
+                }
+
+                return installedPrograms;
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+            List<string> lstInstalledPrograms = new List<string>();
+            string[] programs = GetInstalledPrograms();
+
+            foreach (string program in programs)
+            {
+                lstInstalledPrograms.Add(program);
+                
+            }
+
+            label6.Text = lstInstalledPrograms.Count().ToString();
+            PartitionFreeSpaceReporter();
+
+        }
+
+        private void label5_Click_1(object sender, EventArgs e)
+        {
+
+        }
+        public void PartitionFreeSpaceReporter()
+        {
+          //  List<DriveInfo> PrtinToUser = new List<DriveInfo>();
+            DriveInfo[] drives = DriveInfo.GetDrives();
+
+            // Iterate through each drive and store the drive information
+            foreach (DriveInfo drive in drives)
+            {
+                try
+                {
+                    richTextBox3.AppendText("Drive: " + drive.Name + Environment.NewLine);
+                    richTextBox3.AppendText("Free space: " + drive.AvailableFreeSpace + " bytes" + Environment.NewLine);
+                    richTextBox3.AppendText("------------------------------" + Environment.NewLine);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+           
+
+             
+            
+        }
+
+
+
+        private void richTextBox3_TextChanged_1(object sender, EventArgs e)
         {
 
         }
