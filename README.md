@@ -6,3 +6,9 @@ iknow one thing every problem i face whith , i wil solve whit my Programming Ski
 or database etccc. At the time i made a client in windows standlone application firt to clean some folders for me to speed up pc , day later 
 i decided to download GTA to play then i saw there is no enough space , i had to extend some partition but becuase there was smal partition of 
 recovery mission failed. i maded second part which helps to remove partition whitout any Thirdparty App.Here is face right now and code is here .
+Cleaner Tab:
+https://ibb.co/93rxySy
+
+Disk Tab:
+https://ibb.co/HNzhHGq
+
