@@ -1,15 +1,14 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using YoutubeExplode;
+using YoutubeExplode.Videos.Streams;
 
 namespace OnClickCleaner
 {
@@ -17,6 +16,7 @@ namespace OnClickCleaner
 
     {
         string path = @"C:\Users\Armin\AppData\Local\Temp";
+        string Prefetchpath = @"C:\Windows\Prefetch";
         // C:\Users\Armin\AppData\Local\Temp
         //C:\Windows\Prefetch
         //C:\Windows\Temp
@@ -43,6 +43,7 @@ namespace OnClickCleaner
 
 
         public void RemoveAllFilesInDirectory(string path)
+
         {
             // List<string> FailedfILEToDelete = new List<string>();
 
@@ -83,12 +84,57 @@ namespace OnClickCleaner
 
             }
         }
+        public void CleanUpPrefetch(string path)
 
+        {
+            // List<string> FailedfILEToDelete = new List<string>();
+
+            try
+            {
+                // Get the list of files in the specified directory
+                // string[] files = Directory.GetFiles(path);
+
+                foreach (string file in Directory.GetFiles(path))
+                {
+                    try
+                    {
+                        File.Delete(file);
+                        richTextBox1.Text = file;
+                    }
+                    catch (IOException)
+                    {
+
+                    }
+                }
+
+                foreach (string subDirectory in Directory.GetDirectories(path))
+                {
+                    try
+                    {
+                        RemoveAllFilesInDirectory(subDirectory); // Recursively remove subdirectory contents
+                        Directory.Delete(subDirectory); // Remove the empty directory
+                    }
+                    catch (IOException)
+                    {
+
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Console.WriteLine($"An error occurred while removing files: {ex.Message}");
+
+            }
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             if (checkBox1.Checked)
             {
                 RemoveAllFilesInDirectory(path);
+            }
+            if (checkBox2.Checked)
+            {
+                CleanUpPrefetch(Prefetchpath);
             }
         }
 
@@ -167,7 +213,7 @@ namespace OnClickCleaner
         private void richTextBox3_TextChanged(object sender, EventArgs e)
         {
 
-            
+
         }
         public static string[] GetInstalledPrograms()
         {
@@ -198,11 +244,14 @@ namespace OnClickCleaner
             foreach (string program in programs)
             {
                 lstInstalledPrograms.Add(program);
-                
+
             }
 
             label6.Text = lstInstalledPrograms.Count().ToString();
             PartitionFreeSpaceReporter();
+
+
+
 
         }
 
@@ -210,9 +259,22 @@ namespace OnClickCleaner
         {
 
         }
+
+
+
+
+        private void richTextBox3_TextChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+
+        }
         public void PartitionFreeSpaceReporter()
         {
-          //  List<DriveInfo> PrtinToUser = new List<DriveInfo>();
+            //  List<DriveInfo> PrtinToUser = new List<DriveInfo>();
             DriveInfo[] drives = DriveInfo.GetDrives();
 
             // Iterate through each drive and store the drive information
@@ -230,15 +292,59 @@ namespace OnClickCleaner
                 }
             }
 
-           
 
-             
-            
+
+
+
         }
 
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
 
+        }
+        private  async Task DownloadAudioFromUrl(string videoUrl, string destinationPath)
+        {
+            try
+            {
+                var youtube = new YoutubeClient();
+                var video = await youtube.Videos.GetAsync(videoUrl);
 
-        private void richTextBox3_TextChanged_1(object sender, EventArgs e)
+                var streamManifest = await youtube.Videos.Streams.GetManifestAsync(video.Id);
+                var audioStreams = streamManifest.GetAudioStreams().Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4);
+                var streamInfo = audioStreams.OrderByDescending(s => s.Bitrate).FirstOrDefault();
+
+                if (streamInfo != null)
+                {
+                    await youtube.Videos.Streams.DownloadAsync(streamInfo, destinationPath);
+                }
+                else
+                {
+                   //  Console.WriteLine("No audio stream found for the given video.");
+                }
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("An error occurred while downloading the audio: " + ex.Message);
+            }
+        }
+
+        private async void button4_Click_1(object sender, EventArgs e)
+        {
+           await DownloadAudioFromUrl(textBox3.Text, textBox4.Text);
+            label9.Text = "Done";
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tabPage4_Click(object sender, EventArgs e)
         {
 
         }
