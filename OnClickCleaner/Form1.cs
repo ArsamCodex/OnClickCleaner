@@ -226,7 +226,7 @@ namespace OnClickCleaner
                 }
                 catch (Exception)
                 {
-
+                    //HAndle exception
                 }
             }
 
