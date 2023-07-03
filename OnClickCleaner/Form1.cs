@@ -330,8 +330,21 @@ namespace OnClickCleaner
 
         private async void button4_Click_1(object sender, EventArgs e)
         {
-           await DownloadAudioFromUrl(textBox3.Text, textBox4.Text);
-            label9.Text = "Done";
+            if (string.IsNullOrEmpty(textBox3.Text))
+            {
+                errorProvider1.SetError(textBox3, "Please enter a value in textBox3.");
+            }
+            else
+            {
+                errorProvider1.Clear();
+
+                richTextBox1.Text = "Please Wait Until U get Done";
+                await DownloadAudioFromUrl(textBox3.Text, textBox4.Text);
+                richTextBox1.AppendText(Environment.NewLine + "File Downloaded Successfully. Operation Done!");
+                richTextBox1.AppendText(Environment.NewLine + "File Downloaded Here: " + textBox4.Text);
+            }
+
+       
         }
 
         private void textBox3_TextChanged(object sender, EventArgs e)
@@ -341,12 +354,14 @@ namespace OnClickCleaner
 
         private void textBox4_TextChanged(object sender, EventArgs e)
         {
-
+            
         }
 
         private void tabPage4_Click(object sender, EventArgs e)
         {
 
         }
+
+        
     }
 }
