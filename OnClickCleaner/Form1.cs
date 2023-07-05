@@ -5,10 +5,17 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using Newtonsoft.Json.Linq;
+using AngleSharp.Text;
+using Newtonsoft.Json;
 
 namespace OnClickCleaner
 {
@@ -17,6 +24,8 @@ namespace OnClickCleaner
     {
         string path = @"C:\Users\Armin\AppData\Local\Temp";
         string Prefetchpath = @"C:\Windows\Prefetch";
+        string apiUrl = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=100";
+
         // C:\Users\Armin\AppData\Local\Temp
         //C:\Windows\Prefetch
         //C:\Windows\Temp
@@ -302,7 +311,7 @@ namespace OnClickCleaner
         {
 
         }
-        private  async Task DownloadAudioFromUrl(string videoUrl, string destinationPath)
+        private async Task DownloadAudioFromUrl(string videoUrl, string destinationPath)
         {
             try
             {
@@ -319,7 +328,7 @@ namespace OnClickCleaner
                 }
                 else
                 {
-                   //  Console.WriteLine("No audio stream found for the given video.");
+                    //  Console.WriteLine("No audio stream found for the given video.");
                 }
             }
             catch (Exception ex)
@@ -344,7 +353,7 @@ namespace OnClickCleaner
                 richTextBox1.AppendText(Environment.NewLine + "File Downloaded Here: " + textBox4.Text);
             }
 
-       
+
         }
 
         private void textBox3_TextChanged(object sender, EventArgs e)
@@ -354,7 +363,7 @@ namespace OnClickCleaner
 
         private void textBox4_TextChanged(object sender, EventArgs e)
         {
-            
+
         }
 
         private void tabPage4_Click(object sender, EventArgs e)
@@ -362,6 +371,123 @@ namespace OnClickCleaner
 
         }
 
-        
+        private Timer timer;
+        private async void tabPage5_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                await UpdatePrices(); // Call the method to update prices initially
+
+                decimal movingAverage = await CalculateMovingAverage(apiUrl);
+                string formattedMovingAverage = movingAverage.ToString("0.00");
+                label14.Text = formattedMovingAverage;
+
+
+
+
+
+
+                timer = new Timer(); // Initialize the timer
+                timer.Interval = 3000; // Set the interval to 3 seconds
+                timer.Tick += async (s, args) => await UpdatePrices(); // Assign the update method to the tick event
+                timer.Start(); // Start the timer
+
+
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occur during the API request or timer setup
+                //MessageBox.Show("An error occurred: " + ex.Message);
+            }
+        }
+
+        private void label13_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void button5_Click(object sender, EventArgs e)
+        {
+
+
+        }
+        public async Task<string> GetBinancePrice(string symbol)
+        {
+            try
+            {
+                string apiUrl = $"https://www.binance.com/api/v3/ticker/price?symbol={symbol}";
+
+                using (HttpClient client = new HttpClient())
+                {
+                    HttpResponseMessage response = await client.GetAsync(apiUrl);
+                    response.EnsureSuccessStatusCode();
+
+                    string responseBody = await response.Content.ReadAsStringAsync();
+
+                    // Parse the JSON response and extract the price
+                    JObject data = JObject.Parse(responseBody);
+                    string price = (string)data["price"];
+
+                    return price;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occur during the API request
+                return null;
+
+            }
+        }
+        private async Task UpdatePrices()
+        {
+            try
+            {
+                label13.Text = await GetBinancePrice("BTCUSDT");
+                label12.Text = await GetBinancePrice("ETHUSDT");
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occur during the API request
+                // MessageBox.Show("An error occurred: " + ex.Message);
+            }
+        }
+        private void label12_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+
+        private void label14_Click(object sender, EventArgs e)
+        {
+
+        }
+        static async Task<decimal> CalculateMovingAverage(string apiUrl)
+        {
+
+            using (HttpClient client = new HttpClient())
+            {
+                string response = await client.GetStringAsync(apiUrl);
+                CoinGeckoResponse data = JsonConvert.DeserializeObject<CoinGeckoResponse>(response);
+
+                decimal[] prices = data.Prices.Select(p => p[1]).ToArray();
+                decimal sum = prices.Sum();
+                decimal movingAverage = sum / prices.Length;
+
+                return movingAverage;
+            }
+        }
+    }
+
+    public class CoinGeckoResponse
+    {
+        [JsonProperty("prices")]
+        public decimal[][] Prices { get; set; }
     }
 }
+
+
+
+
+
+
