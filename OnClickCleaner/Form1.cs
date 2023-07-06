@@ -16,6 +16,7 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 using AngleSharp.Text;
 using Newtonsoft.Json;
+using System.Drawing;
 
 namespace OnClickCleaner
 {
@@ -25,8 +26,9 @@ namespace OnClickCleaner
         string path = @"C:\Users\Armin\AppData\Local\Temp";
         string Prefetchpath = @"C:\Windows\Prefetch";
         string apiUrl = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=100";
-
-        // C:\Users\Armin\AppData\Local\Temp
+        Color colorIncrease = Color.Green;
+        Color colorDecrease = Color.Red;
+        decimal previousPrice ;     // C:\Users\Armin\AppData\Local\Temp
         //C:\Windows\Prefetch
         //C:\Windows\Temp
         public Form1()
@@ -388,7 +390,7 @@ namespace OnClickCleaner
 
 
                 timer = new Timer(); // Initialize the timer
-                timer.Interval = 3000; // Set the interval to 3 seconds
+                timer.Interval = 15000; // Set the interval to 3 seconds
                 timer.Tick += async (s, args) => await UpdatePrices(); // Assign the update method to the tick event
                 timer.Start(); // Start the timer
 
@@ -398,6 +400,7 @@ namespace OnClickCleaner
             {
                 // Handle any exceptions that occur during the API request or timer setup
                 //MessageBox.Show("An error occurred: " + ex.Message);
+                richTextBox1.AppendText(ex.Message);
             }
         }
 
@@ -434,16 +437,40 @@ namespace OnClickCleaner
             catch (Exception ex)
             {
                 // Handle any exceptions that occur during the API request
+                richTextBox1.AppendText("No Internet Connetcio Valid"+ex.Message);
                 return null;
 
             }
         }
         private async Task UpdatePrices()
         {
+           
             try
             {
                 label13.Text = await GetBinancePrice("BTCUSDT");
                 label12.Text = await GetBinancePrice("ETHUSDT");
+                label21.Text = await GetBinancePrice("LTCUSDT");
+                label22.Text = await GetBinancePrice("FTMUSDT");
+                label23.Text = await GetBinancePrice("BNBUSDT");
+
+                 previousPrice = decimal.Parse(await GetBinancePrice("BTCUSDT"));
+               // previousPrice = decimal.Parse(label13.Text);
+                
+
+
+                // labelPrice.Text = label13.Text;
+
+                // Compare the current price with the previous price and set the label color accordingly
+                if (previousPrice < decimal.Parse(label13.Text))
+                {
+                    richTextBox1.AppendText( "Down Down Down");
+                    label24.BackColor = colorDecrease;
+                }
+                else if (previousPrice > decimal.Parse(label13.Text))
+                {
+                    label24.BackColor = colorIncrease;
+                    richTextBox1.AppendText("UP UP UP");
+                }
             }
             catch (Exception ex)
             {
@@ -476,6 +503,57 @@ namespace OnClickCleaner
 
                 return movingAverage;
             }
+        }
+
+        private void label21_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label22_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox5_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label24_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tabPage6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button5_Click_1(object sender, EventArgs e)
+        {
+
+            string jpgFilePath = textBox5.Text;
+            string icoFilePath = textBox6.Text;
+            ConvertJpgToIcon(jpgFilePath, icoFilePath);
+            richTextBox1.AppendText("ICO Extention Done");
+        }
+        static void ConvertJpgToIcon(string jpgFilePath, string icoFilePath)
+        {
+            using (Bitmap bitmap = new Bitmap(jpgFilePath))
+            {
+                Icon icon = Icon.FromHandle(bitmap.GetHicon());
+
+                using (System.IO.FileStream stream = new System.IO.FileStream(icoFilePath, System.IO.FileMode.Create))
+                {
+                    icon.Save(stream);
+                }
+            }
+        }
+
+        private void textBox5_TextChanged_1(object sender, EventArgs e)
+        {
+
         }
     }
 
