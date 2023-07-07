@@ -79,8 +79,14 @@
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.label25 = new System.Windows.Forms.Label();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.button6 = new System.Windows.Forms.Button();
+            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.label27 = new System.Windows.Forms.Label();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
+            this.label28 = new System.Windows.Forms.Label();
+            this.textBox8 = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -88,6 +94,7 @@
             this.tabPage4.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.tabPage6.SuspendLayout();
+            this.tabPage7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -160,6 +167,7 @@
             this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage6);
+            this.tabControl1.Controls.Add(this.tabPage7);
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -600,6 +608,49 @@
             this.label25.TabIndex = 0;
             this.label25.Text = "File To COnvrt";
             // 
+            // tabPage7
+            // 
+            this.tabPage7.Controls.Add(this.textBox8);
+            this.tabPage7.Controls.Add(this.label28);
+            this.tabPage7.Controls.Add(this.button6);
+            this.tabPage7.Controls.Add(this.textBox7);
+            this.tabPage7.Controls.Add(this.label27);
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage7.Size = new System.Drawing.Size(387, 417);
+            this.tabPage7.TabIndex = 6;
+            this.tabPage7.Text = "TXTCHecker";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            this.tabPage7.Click += new System.EventHandler(this.tabPage7_Click);
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(91, 222);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(208, 23);
+            this.button6.TabIndex = 2;
+            this.button6.Text = "Start Operation";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // textBox7
+            // 
+            this.textBox7.Location = new System.Drawing.Point(70, 22);
+            this.textBox7.Name = "textBox7";
+            this.textBox7.Size = new System.Drawing.Size(287, 20);
+            this.textBox7.TabIndex = 1;
+            this.textBox7.TextChanged += new System.EventHandler(this.textBox7_TextChanged);
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(18, 22);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(29, 13);
+            this.label27.TabIndex = 0;
+            this.label27.Text = "Path";
+            // 
             // richTextBox1
             // 
             this.richTextBox1.Location = new System.Drawing.Point(463, 28);
@@ -612,6 +663,23 @@
             // errorProvider1
             // 
             this.errorProvider1.ContainerControl = this;
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(21, 86);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(38, 13);
+            this.label28.TabIndex = 3;
+            this.label28.Text = "Words";
+            // 
+            // textBox8
+            // 
+            this.textBox8.Location = new System.Drawing.Point(70, 78);
+            this.textBox8.Name = "textBox8";
+            this.textBox8.Size = new System.Drawing.Size(184, 20);
+            this.textBox8.TabIndex = 4;
+            this.textBox8.TextChanged += new System.EventHandler(this.textBox8_TextChanged);
             // 
             // Form1
             // 
@@ -637,6 +705,8 @@
             this.tabPage5.PerformLayout();
             this.tabPage6.ResumeLayout(false);
             this.tabPage6.PerformLayout();
+            this.tabPage7.ResumeLayout(false);
+            this.tabPage7.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -696,6 +766,12 @@
         private System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.TextBox textBox8;
+        private System.Windows.Forms.Label label28;
     }
 }
 

@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using AngleSharp.Text;
 using Newtonsoft.Json;
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 namespace OnClickCleaner
 {
@@ -28,7 +29,7 @@ namespace OnClickCleaner
         string apiUrl = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=100";
         Color colorIncrease = Color.Green;
         Color colorDecrease = Color.Red;
-        decimal previousPrice ;     // C:\Users\Armin\AppData\Local\Temp
+        decimal previousPrice;     // C:\Users\Armin\AppData\Local\Temp
         //C:\Windows\Prefetch
         //C:\Windows\Temp
         public Form1()
@@ -437,14 +438,14 @@ namespace OnClickCleaner
             catch (Exception ex)
             {
                 // Handle any exceptions that occur during the API request
-                richTextBox1.AppendText("No Internet Connetcio Valid"+ex.Message);
+                richTextBox1.AppendText("No Internet Connetcio Valid" + ex.Message);
                 return null;
 
             }
         }
         private async Task UpdatePrices()
         {
-           
+
             try
             {
                 label13.Text = await GetBinancePrice("BTCUSDT");
@@ -453,9 +454,9 @@ namespace OnClickCleaner
                 label22.Text = await GetBinancePrice("FTMUSDT");
                 label23.Text = await GetBinancePrice("BNBUSDT");
 
-                 previousPrice = decimal.Parse(await GetBinancePrice("BTCUSDT"));
-               // previousPrice = decimal.Parse(label13.Text);
-                
+                previousPrice = decimal.Parse(await GetBinancePrice("BTCUSDT"));
+                // previousPrice = decimal.Parse(label13.Text);
+
 
 
                 // labelPrice.Text = label13.Text;
@@ -463,7 +464,7 @@ namespace OnClickCleaner
                 // Compare the current price with the previous price and set the label color accordingly
                 if (previousPrice < decimal.Parse(label13.Text))
                 {
-                    richTextBox1.AppendText( "Down Down Down");
+                    richTextBox1.AppendText("Down Down Down");
                     label24.BackColor = colorDecrease;
                 }
                 else if (previousPrice > decimal.Parse(label13.Text))
@@ -555,7 +556,63 @@ namespace OnClickCleaner
         {
 
         }
+
+        private void tabPage7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Specify the path to the text file
+                string filePath = textBox7.Text;
+
+                // Read the word to search from the TextBox
+                string searchWord = textBox8.Text;
+
+                // Create a StreamReader object to read the file
+                using (StreamReader reader = new StreamReader(filePath))
+                {
+                    string line;
+                    int count = 0;
+
+                    // Read lines from the file and check for the search word
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        // Perform case-insensitive search
+                        int occurrences = new Regex(Regex.Escape(searchWord), RegexOptions.IgnoreCase).Matches(line).Count;
+                        richTextBox1.AppendText(line);
+                        richTextBox1.AppendText("-----------------------");
+
+                        count += occurrences;
+                    }
+
+                    // Display the count of occurrences to the user
+                   // MessageBox.Show("The word '" + searchWord + "' appears " + count + " times in the file.", "Search Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    richTextBox1.AppendText($"The word  {searchWord} appears  { count}  times in the file., Search Result");
+
+                }
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show("An error occurred while reading the file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void textBox7_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox8_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
+
+
 
     public class CoinGeckoResponse
     {
