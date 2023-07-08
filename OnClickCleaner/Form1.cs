@@ -18,6 +18,7 @@ using AngleSharp.Text;
 using Newtonsoft.Json;
 using System.Drawing;
 using System.Text.RegularExpressions;
+using System.Management;
 
 namespace OnClickCleaner
 {
@@ -249,6 +250,23 @@ namespace OnClickCleaner
 
         private void button3_Click(object sender, EventArgs e)
         {
+            float cpuTemperature = GetCpuTemperature();
+
+            if (!float.IsNaN(cpuTemperature))
+            {
+                //Console.WriteLine("CPU Temperature: " + cpuTemperature.ToString("0.00") + "°C");
+                richTextBox3.AppendText($"CPU Temperature:  + {cpuTemperature.ToString("0.00")}+ °C");
+                richTextBox3.AppendText("------------------------------" + Environment.NewLine);
+
+            }
+            else
+            {
+                //Console.WriteLine("Failed to retrieve CPU temperature.");
+                richTextBox1.AppendText("Something Went Wrong");
+            }
+
+
+
 
             List<string> lstInstalledPrograms = new List<string>();
             string[] programs = GetInstalledPrograms();
@@ -590,8 +608,8 @@ namespace OnClickCleaner
                     }
 
                     // Display the count of occurrences to the user
-                   // MessageBox.Show("The word '" + searchWord + "' appears " + count + " times in the file.", "Search Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    richTextBox1.AppendText($"The word  {searchWord} appears  { count}  times in the file., Search Result");
+                    // MessageBox.Show("The word '" + searchWord + "' appears " + count + " times in the file.", "Search Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    richTextBox1.AppendText($"The word  {searchWord} appears  {count}  times in the file., Search Result");
 
                 }
             }
@@ -605,7 +623,30 @@ namespace OnClickCleaner
         {
 
         }
+        public float GetCpuTemperature()
+        {
+            try
+            {
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\WMI", "SELECT * FROM MSAcpi_ThermalZoneTemperature");
+                ManagementObjectCollection objCollection = searcher.Get();
 
+                foreach (ManagementObject obj in objCollection)
+                {
+                    richTextBox1.AppendText (obj.ToString());
+                    richTextBox1.AppendText("--------------");
+                    richTextBox1.AppendText(objCollection.Count.ToString());
+                    // Convert the temperature value to Celsius
+                    float temperature = Convert.ToInt32(obj["CurrentTemperature"]) / 10.0f - 273.15f;
+                    return temperature;
+                }
+            }
+            catch (ManagementException ex)
+            {
+                //Console.WriteLine("An error occurred while retrieving the CPU temperature: " + ex.Message);
+            }
+
+            return float.NaN; // Return NaN if temperature retrieval fails
+        }
         private void textBox8_TextChanged(object sender, EventArgs e)
         {
 
